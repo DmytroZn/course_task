@@ -59,11 +59,10 @@ def copy_files(files_name: list, path_files: str, path_copied_files: str):
 
 if __name__ == "__main__":
     logger.info("START PROGRAMM")
-    bese_dir = os.path.dirname(os.path.dirname(__file__))
-    path_files = os.path.join(bese_dir, 'files')
-    path_copied_files = os.path.join(bese_dir, 'copied_files')
+    base_dir = os.path.dirname(os.path.dirname(__file__))
+    path_files = os.path.join(base_dir, 'files')
+    path_copied_files = os.path.join(base_dir, 'copied_files')
     start_time = time.time()
     main(path_files, path_copied_files)
     end_time = time.time() - start_time
     logger.info(f"FINISH PROGRAMM, it`s take {end_time}")
-

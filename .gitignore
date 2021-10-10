@@ -1,6 +1,5 @@
 /venv
 /files
-utils.py
 /.idea
 /copied_files
 *__pycache__
