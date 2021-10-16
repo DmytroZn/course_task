@@ -4,4 +4,6 @@
 /copied_files
 *__pycache__
 *.log
-/.dat
+/*.dat
+/*.zip
+/*.csv

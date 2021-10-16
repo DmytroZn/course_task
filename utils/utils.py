@@ -6,7 +6,7 @@ from homework2 import logger
 
 
 @logger.catch
-def set_file_piclke(data, file_name: str) -> None:
+def set_file_pickle(data, file_name: str) -> None:
     """
         This method dump pickle
     :param data:
@@ -18,7 +18,7 @@ def set_file_piclke(data, file_name: str) -> None:
 
 
 @logger.catch
-def get_file_piclke(file_name: str):
+def get_file_pickle(file_name: str):
     """
         This method load pickle
     :param file_name:
@@ -43,23 +43,21 @@ def get_universal_pool(pool: str, max_workers: int, func, type_convert: Union[tu
     :return:
     """
     res = None
-    if pool == 'Thread':
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            try:
-                res = executor.map(func, *args, **kwargs)
-                res = type_convert(res) if type_convert else res
-            except TypeError as e:
-                logger.debug('You need write Sequence')
-                logger.debug(f'{args=}\n, {kwargs=}\n')
-                raise e
-    elif pool == 'Process':
-        with ProcessPoolExecutor(max_workers=max_workers) as executor:
-            try:
-                res = executor.map(func, *args, **kwargs)
-                res = type_convert(res) if type_convert else res
-            except TypeError as e:
-                logger.debug('You need write Sequence')
-                logger.debug(f'{args=}\n, {kwargs=}\n')
-                raise e
+    if pool == 'Process':
+        res = universal_executor(ProcessPoolExecutor, max_workers, func, type_convert, *args, **kwargs)
+    else:
+        res = universal_executor(ThreadPoolExecutor, max_workers, func, type_convert, *args, **kwargs)
+    return res
 
+
+def universal_executor(FuncdPoolExecutor, max_workers, func, type_convert, *args, **kwargs):
+    res = None
+    with FuncdPoolExecutor(max_workers=max_workers) as executor:
+        try:
+            res = executor.map(func, *args, **kwargs)
+            res = type_convert(res) if type_convert else res
+        except TypeError as e:
+            logger.debug('You need write Sequence')
+            logger.debug(f'{args=}\n, {kwargs=}\n')
+            raise e
     return res

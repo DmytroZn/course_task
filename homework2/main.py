@@ -6,12 +6,12 @@ import requests
 from urlextract import URLExtract
 
 from homework2 import logger
-from utils.utils import get_universal_pool, get_file_piclke
+from utils.utils import get_universal_pool, get_file_pickle
 
 
 @logger.catch
 def main(path_file: str):
-    f = get_file_piclke(path_file)
+    f = get_file_pickle(path_file)
     logger.info('Load file with text.')
     res_urls = get_list_of_urls(f)
     logger.debug(f'Got list of urls. {len(f)=}')
