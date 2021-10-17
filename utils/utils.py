@@ -4,6 +4,8 @@ import pickle
 
 from homework2 import logger
 
+from tqdm import tqdm
+
 
 @logger.catch
 def set_file_pickle(data, file_name: str) -> None:
@@ -54,10 +56,19 @@ def universal_executor(FuncdPoolExecutor, max_workers, func, type_convert, *args
     res = None
     with FuncdPoolExecutor(max_workers=max_workers) as executor:
         try:
-            res = executor.map(func, *args, **kwargs)
+            res = tqdm(executor.map(func, *args, **kwargs), total=max_workers)
             res = type_convert(res) if type_convert else res
         except TypeError as e:
             logger.debug('You need write Sequence')
             logger.debug(f'{args=}\n, {kwargs=}\n')
             raise e
     return res
+
+
+@logger.catch
+def validate_num(n):
+    try:
+        n = int(n) if n else n
+    except ValueError:
+        n = False
+    return n
