@@ -48,7 +48,7 @@ def dump_csv_zip_file(file_path: str, dataframe: pd.DataFrame, file_name: str, s
 
     try:
         dataframe.to_csv(path_or_buf=file_name_csv, sep=sep)
-        dataframe.to_csv(file_name_zip, index=False, compression=compression_opts)
+        dataframe.to_csv(path_or_buf=file_name_zip, index=False, compression=compression_opts)
         status = True
         logger.info(f'Created \n {file_name_csv=} \n and \n {file_name_zip=}')
     except:
@@ -75,6 +75,26 @@ def convert_df(dataframe, orient: str = None) -> tuple:
 
 
 @logger.catch
+def validate_field_df(dataframe: pd.DataFrame):
+    """
+        Validate right field into DataFrame
+    :param dataframe:
+    :return:
+    """
+    error_msg = False
+    fields = ('Country', 'Ethnicity', 'US_State', 'UK_Country', 'ResponseId', 'LearnCode', 'YearsCode', 'Age1stCode',
+              'CompFreq', 'CompTotal', 'MainBranch', 'LanguageHaveWorkedWith')
+    try:
+        dataframe[[*fields]]
+    except KeyError as e:
+        col_names = dataframe.columns
+        error_msg = f"\n\n Not enough field \n got {col_names} \n expect {fields} \n\n"
+        logger.error(error_msg)
+
+    return error_msg
+
+
+@logger.catch
 def main(file, file_name):
     """
     :param file: '/home/dmytro/Documents/course_task/survey_results_public.csv'
@@ -85,6 +105,11 @@ def main(file, file_name):
     logger.info('Start load file')
     df = load_csv_file(file)
     logger.info('Finish load file')
+
+    status_check = validate_field_df(df)
+    if status_check:
+        logger.debug('STOP PROGRAM NOT ENOUGH FIELD')
+        raise KeyError(status_check)
 
     logger.info('Start get info statistic_memory')
     df_statistic_memory = get_statistic_memory(df)
